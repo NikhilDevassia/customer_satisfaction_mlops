@@ -15,10 +15,11 @@ from zenml.client import Client
 
 from .config import ModelNameConfig
 
-experiment_tracker = Client().active_stack.experiment_tracker
+# experiment_tracker = Client().active_stack.experiment_tracker
 
 
-@step(experiment_tracker=experiment_tracker.name)
+# @step(experiment_tracker=experiment_tracker.name)
+@step
 def train_model(
     x_train: pd.DataFrame,
     x_test: pd.DataFrame,
@@ -56,7 +57,7 @@ def train_model(
             mlflow.sklearn.autolog()
             model = LinearRegressionModel()
         else:
-            raise ValueError("Model name not supported")
+            raise ValueError("Model {} not supported".format(config.model_name))
 
         tuner = HyperparameterTuner(model, x_train, y_train, x_test, y_test)
 
@@ -67,5 +68,5 @@ def train_model(
             trained_model = model.train(x_train, y_train)
         return trained_model
     except Exception as e:
-        logging.error(e)
+        logging.error("Error in training model: {}".format(e))
         raise e

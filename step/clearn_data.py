@@ -8,7 +8,6 @@ from typing_extensions import Annotated
 # from zenml.steps import Output, step
 from zenml import step
 
-
 @step
 def clean_data(
     data: pd.DataFrame,
@@ -31,9 +30,10 @@ def clean_data(
         divide_strategy = DataDivideStrategy()
         data_cleaning = DataCleaning(preprocessed_data, divide_strategy)
         x_train, x_test, y_train, y_test = data_cleaning.handle_data()
+        logging.info("Data clearning completed")
         return x_train, x_test, y_train, y_test
     except Exception as e:
-        logging.error(e)
+        logging.error("Error while cleaning data: {}".format(e))
         raise e
 
 
