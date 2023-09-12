@@ -51,7 +51,7 @@ class DataPreprocessStrategy(DataStrategy):
             data["product_length_cm"].fillna(data["product_length_cm"].median(), inplace=True)
             data["product_height_cm"].fillna(data["product_height_cm"].median(), inplace=True)
             data["product_width_cm"].fillna(data["product_width_cm"].median(), inplace=True)
-            # write "No review" in review_comment_message column
+            # fill NULL value with 'No review'
             data["review_comment_message"].fillna("No review", inplace=True)
 
             data = data.select_dtypes(include=[np.number]) # select only numeric columns
@@ -60,7 +60,7 @@ class DataPreprocessStrategy(DataStrategy):
 
             return data
         except Exception as e:
-            logging.error(e)
+            logging.error("Error while preprocessing data: {}".format(e))
             raise e
 
 
@@ -81,7 +81,7 @@ class DataDivideStrategy(DataStrategy):
             )
             return X_train, X_test, y_train, y_test
         except Exception as e:
-            logging.error(e)
+            logging.error("Error while dividing data: {}".format(e))
             raise e
 
 
@@ -98,3 +98,21 @@ class DataCleaning:
     def handle_data(self) -> Union[pd.DataFrame, pd.Series]:
         """Handle data based on the provided strategy"""
         return self.strategy.handle_data(self.df)
+    
+
+
+"""
+Created the a abstract class and there are several strategies in it (DataPreprocessStrategy, DataDivideStrategy)
+and created the final class DataCleaning which make use of those strategies
+"""
+
+
+# if __name__ == "__main__":
+#     data = pd.read_csv("data.csv")
+#     data_clearning = DataCleaning(data, DataPreprocessStrategy())
+#     data_clearning.handle_data()
+
+# if __name__ == "__main__":
+#     data = pd.read_csv("data.csv")
+#     data_clearning = DataCleaning(data, DataDivideStrategy())
+#     data_clearning.handle_data()
