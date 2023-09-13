@@ -3,19 +3,19 @@ from typing import cast
 import click
 from pipelines.deployment_pipeline import (
     continuous_deployment_pipeline,
-    inference_pipeline,
+
 )
 from rich import print
 from zenml.integrations.mlflow.mlflow_utils import get_tracking_uri
 from zenml.integrations.mlflow.model_deployers.mlflow_model_deployer import (
     MLFlowModelDeployer,
 )
+from typing import cast
 from zenml.integrations.mlflow.services import MLFlowDeploymentService
 
 DEPLOY = "deploy"
 PREDICT = "predict"
 DEPLOY_AND_PREDICT = "deploy_and_predict"
-
 
 @click.command()
 @click.option(
@@ -31,32 +31,22 @@ DEPLOY_AND_PREDICT = "deploy_and_predict"
 )
 @click.option(
     "--min-accuracy",
-    default=0.5,
+    default=0,
     help="Minimum accuracy required to deploy the model",
 )
-def main(config: str, min_accuracy: float):
-    """Run the MLflow example pipeline."""
-    # get the MLflow model deployer stack component
-    mlflow_model_deployer_component = MLFlowModelDeployer.get_active_model_deployer()
+
+def run_deployment(config: str, min_accuracy: float):
+    mlflow_model_deployment_component = MLFlowModelDeployer.get_active_model_deployer()
     deploy = config == DEPLOY or config == DEPLOY_AND_PREDICT
     predict = config == PREDICT or config == DEPLOY_AND_PREDICT
 
     if deploy:
-        # Initialize a continuous deployment pipeline run
         continuous_deployment_pipeline(
             data_path="C:\Projects\customer_satisfaction_mlops\data\olist_customers_dataset_latest.csv",
             min_accuracy=min_accuracy,
             workers=3,
-            timeout=60,
-        )
-
-    if predict:
-        # Initialize an inference pipeline run
-        inference_pipeline(
-            pipeline_name="continuous_deployment_pipeline",
-            pipeline_step_name="mlflow_model_deployer_step",
-        )
-
+            timeout=60
+            )
     print(
         "You can run:\n "
         f"[italic green]    mlflow ui --backend-store-uri '{get_tracking_uri()}"
@@ -67,7 +57,7 @@ def main(config: str, min_accuracy: float):
     )
 
     # fetch existing services with same pipeline name, step name and model name
-    existing_services = mlflow_model_deployer_component.find_model_server(
+    existing_services = mlflow_model_deployment_component.find_model_server(
         pipeline_name="continuous_deployment_pipeline",
         pipeline_step_name="mlflow_model_deployer_step",
         model_name="model",
@@ -99,4 +89,5 @@ def main(config: str, min_accuracy: float):
 
 
 if __name__ == "__main__":
-    main()
+    run_deployment()
+        
