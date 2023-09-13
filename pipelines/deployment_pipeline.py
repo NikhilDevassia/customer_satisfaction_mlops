@@ -187,12 +187,13 @@ def predictor(
 
 @pipeline(enable_cache=True, settings={"docker": docker_settings})
 def continuous_deployment_pipeline(
+    data_path: str,
     min_accuracy: float = 0.9,
     workers: int = 1,
     timeout: int = DEFAULT_SERVICE_START_STOP_TIMEOUT,
 ):
     # Link all the steps artifacts together
-    df = ingest_df()
+    df = ingest_df(data_path=data_path)
     x_train, x_test, y_train, y_test = clean_df(df)
     model = train_model(x_train, x_test, y_train, y_test)
     mse, rmse = evaluate_model(model, x_test, y_test)

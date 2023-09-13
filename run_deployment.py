@@ -44,6 +44,7 @@ def main(config: str, min_accuracy: float):
     if deploy:
         # Initialize a continuous deployment pipeline run
         continuous_deployment_pipeline(
+            data_path="C:\Projects\customer_satisfaction_mlops\data\olist_customers_dataset_latest.csv",
             min_accuracy=min_accuracy,
             workers=3,
             timeout=60,
