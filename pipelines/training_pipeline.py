@@ -1,9 +1,10 @@
 from zenml import pipeline
 
-from step.clearn_data import clean_data
-from step.evaluation import evaluation
-from step.ingest_data import ingest_data
-from step.model_train import train_model
+from steps.ingest_data import ingest_data
+from steps.clearn_data import clean_data
+from steps.model_train import train_model
+from steps.evaluation import evaluation
+
 
 @pipeline(enable_cache=True)
 def train_pipeline(data_path: str):
