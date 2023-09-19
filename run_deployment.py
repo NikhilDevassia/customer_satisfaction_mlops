@@ -42,7 +42,7 @@ def run_deployment(config: str, min_accuracy: float):
 
     if deploy:
         continuous_deployment_pipeline(
-            data_path="C:\Projects\customer_satisfaction_mlops\data\olist_customers_dataset_latest.csv",
+            data_path="/home/nikhil/Projects/customer_satisfaction_mlops/data/olist_customers_dataset_latest.csv",
             min_accuracy=min_accuracy,
             workers=3,
             timeout=60
